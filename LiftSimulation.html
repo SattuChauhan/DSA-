@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .building { position: relative; width: 120px; height: 400px; border: 2px solid black; }
+    .floor { height: 100px; border-top: 1px solid gray; display: flex; justify-content: space-between; align-items: center; padding: 0 5px; }
+    .lift { position: absolute; width: 40px; height: 80px; background: orange; left: 40px; bottom: 0; transition: bottom 1s; }
+    button { font-size: 12px; margin-left: 5px; }
+  </style>
+</head>
+<body>
+  <h2>Simple Lift Simulation</h2>
+  <div class="building">
+    <div class="floor">Floor 3 <button onclick="callLift(3)">Call</button></div>
+    <div class="floor">Floor 2 <button onclick="callLift(2)">Call</button></div>
+    <div class="floor">Floor 1 <button onclick="callLift(1)">Call</button></div>
+    <div class="floor">Floor 0 <button onclick="callLift(0)">Call</button></div>
+    <div class="lift" id="lift"></div>
+  </div>
+
+  <script>
+    let currentFloor = 0;
+    let requests = [];
+    let busy = false;
+
+    function callLift(floor) {
+      requests.push(floor);
+      processQueue();
+    }
+
+    function processQueue() {
+      if (busy || requests.length === 0) return;
+      busy = true;
+      let targetFloor = requests.shift();
+      moveLift(targetFloor);
+    }
+
+    function moveLift(targetFloor) {
+      let lift = document.getElementById("lift");
+      let distance = targetFloor * 100; // each floor = 100px
+      lift.style.bottom = distance + "px";
+      setTimeout(() => {
+        alert("Door opening at floor " + targetFloor);
+        currentFloor = targetFloor;
+        busy = false;
+        processQueue();
+      }, 1000); // wait 1 sec for move
+    }
+  </script>
+</body>
+</html>
